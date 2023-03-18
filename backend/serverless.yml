@@ -1,6 +1,4 @@
 # TODO: Change the name of the org
-# org: michaelhpet
-# app: serverless-todo-app
 service: serverless-todo-app
 
 plugins:
