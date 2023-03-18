@@ -86,7 +86,10 @@ async function getCertificate(keyId: string): Promise<string> {
   const response = await Axios.get(jwksUrl)
   const keys = response.data.keys
 
-  if (!keys || !keys.length) throw new Error('There were no JWKS keys found')
+  if (!keys || !keys.length) {
+    logger.info('There were no JWKS keys found')
+    throw new Error('There were no JWKS keys found')
+  }
 
   const signingKeys = keys.filter(
     (key: any) =>
@@ -100,8 +103,10 @@ async function getCertificate(keyId: string): Promise<string> {
       key.x5c.length
   )
 
-  if (!signingKeys.length)
+  if (!signingKeys.length) {
+    logger.info('There were no JWKS signing keys found')
     throw new Error('There were no JWKS signing keys found')
+  }
 
   const matchedKey = signingKeys[0]
   const publicCertificate = matchedKey.x5c[0]
