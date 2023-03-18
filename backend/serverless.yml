@@ -1,6 +1,6 @@
 # TODO: Change the name of the org
-org: michaelhpet
-app: serverless-todo-app
+# org: michaelhpet
+# app: serverless-todo-app
 service: serverless-todo-app
 
 plugins:
@@ -24,7 +24,7 @@ provider:
   environment:
     TODOS_TABLE: Todos-${self:provider.stage}
     TODOS_BY_USER_INDEX: TodosByUserIndex
-    ATTACHMENTS_S3_BUCKET: serverless-c4-todo-images-${self:provider.stage}
+    ATTACHMENTS_S3_BUCKET: serverless-todo-images-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
     AUTH0_DOMAIN: dev-b0hyhy00220ehppv.us.auth0.com
 
@@ -282,5 +282,4 @@ resources:
               Principal: '*'
               Action: 's3:GetObject'
               Resource: 'arn:aws:s3:::${self:provider.environment.ATTACHMENTS_S3_BUCKET}/*'
-        Bucket:
-          Ref: AttachmentsBucket
+        Bucket: !Ref AttachmentsBucket
