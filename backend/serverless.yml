@@ -33,14 +33,14 @@ provider:
     # Enable API Gateway logs
     restApi: true
 
-  iam:
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - xray:PutTelemetryRecords
-            - xray:PutTraceSegments
-          Resource: '*'
+  # iam:
+  #   role:
+  #     statements:
+  #       - Effect: Allow
+  #         Action:
+  #           - xray:PutTelemetryRecords
+  #           - xray:PutTraceSegments
+  #         Resource: '*'
 
 functions:
   Auth:
@@ -119,7 +119,7 @@ functions:
           authorizer: Auth
           request:
             schema:
-              application/json: ${file(schemas/update-todo-model.json)}
+              application/json: ${file(models/update-todo-model.json)}
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -271,7 +271,7 @@ resources:
 
     # TODO: Complete the policy below and attach it to the bucket defined above
     # For cross referencing the name of the bucket, use "!Ref AttachmentsBucket"
-    BucketPolicy:
+    AttachmentsBucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
         PolicyDocument:
