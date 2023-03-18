@@ -12,7 +12,8 @@ const logger = createLogger('auth')
 // TODO: Provide a URL that can be used to download a certificate that can be used
 // to verify JWT token signature.
 // To get this URL you need to go to an Auth0 page -> Show Advanced Settings -> Endpoints -> JSON Web Key Set
-const jwksUrl = '...'
+const jwksUrl =
+  'https://dev-b0hyhy00220ehppv.us.auth0.com/.well-known/jwks.json'
 
 export const handler = async (
   event: CustomAuthorizerEvent
@@ -61,6 +62,14 @@ async function verifyToken(authHeader: string): Promise<JwtPayload> {
   // TODO: Implement token verification
   // You should implement it similarly to how it was implemented for the exercise for the lesson 5
   // You can read more about how to do this here: https://auth0.com/blog/navigating-rs256-and-jwks/
+  logger.info(`jwt after decoding: ${jwt}`)
+
+  const keyId = jwt.header.kid
+  logger.info(`keyId: ${jwt}`)
+
+  const pemCertificate = await getCertificateByKeyId(keyId)
+
+  return verify(token, pemCertificate, { algorithms: ['RS256'] }) as JwtPayload
   return undefined
 }
 
