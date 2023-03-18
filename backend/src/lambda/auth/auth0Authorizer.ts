@@ -14,6 +14,7 @@ const logger = createLogger('auth')
 // To get this URL you need to go to an Auth0 page -> Show Advanced Settings -> Endpoints -> JSON Web Key Set
 const jwksUrl =
   'https://dev-b0hyhy00220ehppv.us.auth0.com/.well-known/jwks.json'
+let cachedCertificate: string
 
 export const handler = async (
   event: CustomAuthorizerEvent
@@ -59,18 +60,13 @@ async function verifyToken(authHeader: string): Promise<JwtPayload> {
   const token = getToken(authHeader)
   const jwt: Jwt = decode(token, { complete: true }) as Jwt
 
-  // TODO: Implement token verification
+  // TODO: Implement token verification => DONE
   // You should implement it similarly to how it was implemented for the exercise for the lesson 5
   // You can read more about how to do this here: https://auth0.com/blog/navigating-rs256-and-jwks/
-  logger.info(`jwt after decoding: ${jwt}`)
-
-  const keyId = jwt.header.kid
-  logger.info(`keyId: ${jwt}`)
-
-  const pemCertificate = await getCertificateByKeyId(keyId)
+  const keyId: string = jwt.header.kid
+  const pemCertificate = await getCertificate(keyId)
 
   return verify(token, pemCertificate, { algorithms: ['RS256'] }) as JwtPayload
-  return undefined
 }
 
 function getToken(authHeader: string): string {
@@ -83,4 +79,40 @@ function getToken(authHeader: string): string {
   const token = split[1]
 
   return token
+}
+
+async function getCertificate(keyId: string): Promise<string> {
+  if (cachedCertificate) return cachedCertificate
+
+  const response = await Axios.get(jwksUrl)
+  const keys = response.data.keys
+
+  if (!keys || !keys.length) throw new Error('There were no JWKS keys found')
+
+  const signingKeys = keys.filter(
+    (key: any) =>
+      key.use === 'sig' &&
+      key.kty === 'RSA' &&
+      key.alg === 'RS256' &&
+      key.n &&
+      key.e &&
+      key.kid === keyId &&
+      key.x5c &&
+      key.x5c.length
+  )
+
+  if (!signingKeys.length)
+    throw new Error('There were no JWKS signing keys found')
+
+  const matchedKey = signingKeys[0]
+  const publicCertificate = matchedKey.x5c[0]
+  cachedCertificate = certificateToPEM(publicCertificate)
+  logger.info('pemCertificate:', cachedCertificate)
+
+  return cachedCertificate
+}
+
+function certificateToPEM(certificate: string): string {
+  let pemCertificate = certificate.match(/.{1,64}/g).join('\n')
+  return `-----BEGIN CERTIFICATE-----\n${pemCertificate}\n-----END CERTIFICATE-----\n`
 }
