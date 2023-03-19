@@ -51,6 +51,7 @@ export async function getTodos(userId: string): Promise<TodoItem[]> {
     )
     return todoItems
   } catch (error) {
+    logger.info(`An error occurred: ${error}`)
     logger.error(`Could not fetch todo items for user: ${userId}`)
     return []
   }
@@ -73,7 +74,8 @@ export async function updateTodo(
     await updateTodoItem(todoId, payload as TodoUpdate)
     logger.info('Todo item updated:', payload)
   } catch (error) {
-    logger.error(error?.message || 'Could not update todo item')
+    logger.info(`An error occurred: ${error}`)
+    logger.error('Could not update todo item')
   }
 }
 
@@ -93,7 +95,8 @@ export async function deleteTodo(
     await deleteTodoItem(todoId)
     logger.info(`Deleted todo item: ${todoId} for user: ${userId}`)
   } catch (error) {
-    logger.error(error?.message || 'Could not delete todo item')
+    logger.info(`An error occurred: ${error}`)
+    logger.error('Could not delete todo item')
   }
 }
 
@@ -116,7 +119,8 @@ export async function updateAttachmentUrl(
     await _updateAttachmentUrl(todoId, attachmentUrl)
     logger.info(`Updated todo item attachment url: ${todoId}, ${attachmentUrl}`)
   } catch (error) {
-    logger.error(error?.message || 'Could not update attachment URL')
+    logger.info(`An error occurred: ${error}`)
+    logger.error('Could not update attachment URL')
   }
 }
 

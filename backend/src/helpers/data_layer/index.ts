@@ -29,11 +29,11 @@ export async function createTodoItem(todoItem: TodoItem): Promise<void> {
   logger.info(`Todo item ${todoItem.todoId} was created`)
 }
 
-export async function getTodoItem(todoItemId: string): Promise<TodoItem> {
+export async function getTodoItem(todoId: string): Promise<TodoItem> {
   const result = await docClient
     .get({
       TableName: todosTable,
-      Key: { todoId: todoItemId }
+      Key: { todoId }
     })
     .promise()
 
@@ -57,19 +57,19 @@ export async function getTodosByUserId(userId: string): Promise<TodoItem[]> {
   return result.Items as TodoItem[]
 }
 
-export async function todoItemExists(todoItemId: string): Promise<boolean> {
-  const todoItem = await getTodoItem(todoItemId)
+export async function todoItemExists(todoId: string): Promise<boolean> {
+  const todoItem = await getTodoItem(todoId)
   return Boolean(todoItem)
 }
 
 export async function updateTodoItem(
-  todoItemId: string,
+  todoId: string,
   payload: TodoUpdate
 ): Promise<void> {
   await docClient
     .update({
       TableName: todosTable,
-      Key: { todoId: todoItemId },
+      Key: { todoId },
       UpdateExpression: 'set #name = :name, dueDate = :dueDate, done = :done',
       ExpressionAttributeNames: {
         '#name': 'name'
@@ -82,17 +82,17 @@ export async function updateTodoItem(
     })
     .promise()
 
-  logger.info(`Todo item updated successfully: ${todoItemId}`)
+  logger.info(`Todo item updated successfully: ${todoId}`)
 }
 
 export async function updateAttachmentUrl(
-  todoItemId: string,
+  todoId: string,
   attachmentUrl: string
 ): Promise<void> {
   await docClient
     .update({
       TableName: todosTable,
-      Key: { todoId: todoItemId },
+      Key: { todoId },
       UpdateExpression: 'set attachmentUrl = :attachmentUrl',
       ExpressionAttributeValues: {
         ':attachmentUrl': attachmentUrl
@@ -100,16 +100,16 @@ export async function updateAttachmentUrl(
     })
     .promise()
 
-  logger.info(`Todo item attachment URL updated: ${todoItemId}`)
+  logger.info(`Todo item attachment URL updated: ${todoId}`)
 }
 
-export async function deleteTodoItem(todoItemId: string): Promise<void> {
+export async function deleteTodoItem(todoId: string): Promise<void> {
   await docClient
     .delete({
       TableName: todosTable,
-      Key: { todoId: todoItemId }
+      Key: { todoId }
     })
     .promise()
 
-  logger.info(`Todo item deleted successfully: ${todoItemId}`)
+  logger.info(`Todo item deleted successfully: ${todoId}`)
 }
