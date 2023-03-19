@@ -31,7 +31,7 @@ export async function getTodoItem(todoItemId: string): Promise<TodoItem> {
   const result = await docClient
     .get({
       TableName: todosTable,
-      Key: { todoItemId }
+      Key: { todoId: todoItemId }
     })
     .promise()
 
@@ -67,7 +67,7 @@ export async function updateTodoItem(
   await docClient
     .update({
       TableName: todosTable,
-      Key: { todoItemId },
+      Key: { todoId: todoItemId },
       UpdateExpression: 'set #name = :name, dueDate = :dueDate, done = :done',
       ExpressionAttributeNames: {
         '#name': 'name'
@@ -90,7 +90,7 @@ export async function updateAttachmentUrl(
   await docClient
     .update({
       TableName: todosTable,
-      Key: { todoItemId },
+      Key: { todoId: todoItemId },
       UpdateExpression: 'set attachmentUrl = :attachmentUrl',
       ExpressionAttributeValues: {
         ':attachmentUrl': attachmentUrl
@@ -105,7 +105,7 @@ export async function deleteTodoItem(todoItemId: string): Promise<void> {
   await docClient
     .delete({
       TableName: todosTable,
-      Key: { todoItemId }
+      Key: { todoId: todoItemId }
     })
     .promise()
 
