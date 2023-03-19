@@ -229,19 +229,20 @@ resources:
     TodosTable:
       Type: AWS::DynamoDB::Table
       Properties:
+        TableName: ${self:provider.environment.TODOS_TABLE}
         AttributeDefinitions:
-          - AttributeName: todoId
-            AttributeType: S
           - AttributeName: userId
+            AttributeType: S
+          - AttributeName: todoId
             AttributeType: S
           - AttributeName: createdAt
             AttributeType: S
         KeySchema:
-          - AttributeName: todoId
+          - AttributeName: userId
             KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-        TableName: ${self:provider.environment.TODOS_TABLE}
-        GlobalSecondaryIndexes:
+          - AttributeName: todoId
+            KeyType: RANGE
+        LocalSecondaryIndexes:
           - IndexName: ${self:provider.environment.TODOS_BY_USER_INDEX}
             KeySchema:
               - AttributeName: userId
@@ -250,6 +251,7 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST
 
     # TODO: Complete the bucket properties below.
     # Do not forget to add the CorsConfiguration propoerty
