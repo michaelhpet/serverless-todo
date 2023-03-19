@@ -9,7 +9,7 @@ const XAWS = AWSXRay.captureAWS(AWS)
 
 const s3 = new XAWS.S3({ signatureVersion: 'v4' })
 const attachmentsS3Bucket: string = process.env.ATTACHMENTS_S3_BUCKET
-const signedUrlExpiration: string = process.env.SIGNED_URL_EXPIRATION
+const signedUrlExpiration: number = Number(process.env.SIGNED_URL_EXPIRATION)
 
 export function getAttachmentUrl(attachmentId: string): string {
   const url: string = `https://${attachmentsS3Bucket}.s3.amazonaws.com/${attachmentId}`
