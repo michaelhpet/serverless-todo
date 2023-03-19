@@ -27,11 +27,14 @@ export async function createTodoItem(todoItem: TodoItem): Promise<void> {
   logger.info(`Todo item ${todoItem.todoId} was created`)
 }
 
-export async function getTodoItem(todoId: string): Promise<TodoItem> {
+export async function getTodoItem(
+  userId: string,
+  todoId: string
+): Promise<TodoItem> {
   const result = await docClient
     .get({
       TableName: todosTable,
-      Key: { todoId }
+      Key: { userId, todoId }
     })
     .promise()
 
@@ -55,8 +58,11 @@ export async function getTodosByUserId(userId: string): Promise<TodoItem[]> {
   return result.Items as TodoItem[]
 }
 
-export async function todoItemExists(todoId: string): Promise<boolean> {
-  const todoItem = await getTodoItem(todoId)
+export async function todoItemExists(
+  userId: string,
+  todoId: string
+): Promise<boolean> {
+  const todoItem = await getTodoItem(userId, todoId)
   return Boolean(todoItem)
 }
 
@@ -65,10 +71,11 @@ export async function updateTodoItem(
   todoId: string,
   payload: TodoUpdate
 ): Promise<void> {
+  logger.info(`Attempting to update todo item: ${todoId}`)
   await docClient
     .update({
       TableName: todosTable,
-      Key: { userId: userId, todoId: todoId },
+      Key: { userId, todoId },
       UpdateExpression: 'set #name = :name, dueDate = :dueDate, done = :done',
       ExpressionAttributeNames: {
         '#name': 'name'
@@ -76,8 +83,7 @@ export async function updateTodoItem(
       ExpressionAttributeValues: {
         ':name': payload.name,
         ':dueDate': payload.dueDate,
-        ':done': payload.done,
-        ':userId': userId
+        ':done': payload.done
       }
     })
     .promise()
@@ -90,17 +96,15 @@ export async function updateAttachmentUrl(
   todoId: string,
   attachmentUrl: string
 ): Promise<void> {
+  logger.info(`Attempting to update todo item: ${todoId}`)
   await docClient
     .update({
       TableName: todosTable,
-      Key: { userId: userId, todoId: todoId },
+      Key: { userId, todoId },
       UpdateExpression: 'set attachmentUrl = :attachmentUrl',
       ExpressionAttributeValues: {
-        ':attachmentUrl': attachmentUrl,
-        ':userId': userId
-      },
-      ConditionExpression: 'userId = :userId',
-      ReturnValues: 'UPDATED_NEW'
+        ':attachmentUrl': attachmentUrl
+      }
     })
     .promise()
 
@@ -115,11 +119,7 @@ export async function deleteTodoItem(
   await docClient
     .delete({
       TableName: todosTable,
-      Key: { userId: userId, todoId: todoId },
-      ExpressionAttributeValues: {
-        ':userId': userId
-      },
-      ConditionExpression: 'userId = :userId'
+      Key: { userId, todoId }
     })
     .promise()
 

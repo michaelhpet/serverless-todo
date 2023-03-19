@@ -63,7 +63,7 @@ export async function updateTodo(
   payload: UpdateTodoRequest
 ): Promise<void> {
   try {
-    const item = await getTodoItem(todoId)
+    const item = await getTodoItem(userId, todoId)
 
     if (!item) throw new Error('Todo item not found')
 
@@ -84,7 +84,7 @@ export async function deleteTodo(
   todoId: string
 ): Promise<void> {
   try {
-    const item = await getTodoItem(todoId)
+    const item = await getTodoItem(userId, todoId)
 
     if (!item) throw new Error('Todo item not found')
 
@@ -108,7 +108,7 @@ export async function updateAttachmentUrl(
   try {
     const attachmentUrl = getAttachmentUrl(attachmentId)
 
-    const item = await getTodoItem(todoId)
+    const item = await getTodoItem(userId, todoId)
 
     if (!item) throw new Error('Todo item not found')
 
