@@ -12,7 +12,8 @@ const logger = createLogger('auth')
 // TODO: Provide a URL that can be used to download a certificate that can be used
 // to verify JWT token signature.
 // To get this URL you need to go to an Auth0 page -> Show Advanced Settings -> Endpoints -> JSON Web Key Set
-const jwksUrl = process.env.AUTH0_DOMAIN
+const jwksUrl = `https://${process.env.AUTH0_DOMAIN_ID}/.well-known/jwks.json`
+
 let cachedCertificate: string
 
 export const handler = async (
