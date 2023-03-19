@@ -17,8 +17,6 @@ const todosTable = process.env.TODOS_TABLE
 const todosByUserIndex = process.env.TODOS_BY_USER_INDEX
 
 export async function createTodoItem(todoItem: TodoItem): Promise<void> {
-  if (!Boolean(todoItem.name)) throw new Error('Please provide a name for todo')
-
   await docClient
     .put({
       TableName: todosTable,
