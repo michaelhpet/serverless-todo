@@ -68,7 +68,7 @@ export async function updateTodoItem(
   await docClient
     .update({
       TableName: todosTable,
-      Key: { userId, todoId },
+      Key: { userId: userId, todoId: todoId },
       UpdateExpression: 'set #name = :name, dueDate = :dueDate, done = :done',
       ExpressionAttributeNames: {
         '#name': 'name'
@@ -76,7 +76,8 @@ export async function updateTodoItem(
       ExpressionAttributeValues: {
         ':name': payload.name,
         ':dueDate': payload.dueDate,
-        ':done': payload.done
+        ':done': payload.done,
+        ':userId': userId
       }
     })
     .promise()
@@ -92,11 +93,14 @@ export async function updateAttachmentUrl(
   await docClient
     .update({
       TableName: todosTable,
-      Key: { userId, todoId },
+      Key: { userId: userId, todoId: todoId },
       UpdateExpression: 'set attachmentUrl = :attachmentUrl',
       ExpressionAttributeValues: {
-        ':attachmentUrl': attachmentUrl
-      }
+        ':attachmentUrl': attachmentUrl,
+        ':userId': userId
+      },
+      ConditionExpression: 'userId = :userId',
+      ReturnValues: 'UPDATED_NEW'
     })
     .promise()
 
@@ -111,7 +115,11 @@ export async function deleteTodoItem(
   await docClient
     .delete({
       TableName: todosTable,
-      Key: { userId, todoId }
+      Key: { userId: userId, todoId: todoId },
+      ExpressionAttributeValues: {
+        ':userId': userId
+      },
+      ConditionExpression: 'userId = :userId'
     })
     .promise()
 
