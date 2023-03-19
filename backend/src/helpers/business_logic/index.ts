@@ -126,6 +126,7 @@ export function getUploadUrl(attachmentId: string): string {
     logger.info(`Signed URL created: ${signedUrl}`)
     return signedUrl
   } catch (error) {
+    logger.info(`An error occurred: ${error}`)
     logger.error('Could not get upload URL')
   }
 }
