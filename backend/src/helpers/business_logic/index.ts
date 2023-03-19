@@ -37,6 +37,7 @@ export async function createTodo(
     logger.info(`Todo item created successfully: ${todoId}`, todoItem)
     return todoItem
   } catch (error) {
+    logger.info(`An error occurred: ${error}`)
     logger.error(`Could not create todo item for user: ${userId}`)
   }
 }
