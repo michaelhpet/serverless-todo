@@ -61,13 +61,14 @@ export async function todoItemExists(todoId: string): Promise<boolean> {
 }
 
 export async function updateTodoItem(
+  userId: string,
   todoId: string,
   payload: TodoUpdate
 ): Promise<void> {
   await docClient
     .update({
       TableName: todosTable,
-      Key: { todoId },
+      Key: { userId, todoId },
       UpdateExpression: 'set #name = :name, dueDate = :dueDate, done = :done',
       ExpressionAttributeNames: {
         '#name': 'name'
@@ -84,13 +85,14 @@ export async function updateTodoItem(
 }
 
 export async function updateAttachmentUrl(
+  userId: string,
   todoId: string,
   attachmentUrl: string
 ): Promise<void> {
   await docClient
     .update({
       TableName: todosTable,
-      Key: { todoId },
+      Key: { userId, todoId },
       UpdateExpression: 'set attachmentUrl = :attachmentUrl',
       ExpressionAttributeValues: {
         ':attachmentUrl': attachmentUrl
@@ -101,11 +103,15 @@ export async function updateAttachmentUrl(
   logger.info(`Todo item attachment URL updated: ${todoId}`)
 }
 
-export async function deleteTodoItem(todoId: string): Promise<void> {
+export async function deleteTodoItem(
+  userId: string,
+  todoId: string
+): Promise<void> {
+  logger.info(`Attempting to delete todo item: ${todoId}`)
   await docClient
     .delete({
       TableName: todosTable,
-      Key: { todoId }
+      Key: { userId, todoId }
     })
     .promise()
 

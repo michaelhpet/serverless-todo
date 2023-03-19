@@ -71,7 +71,7 @@ export async function updateTodo(
       throw new Error('Update action on todo item unauthorized')
     }
 
-    await updateTodoItem(todoId, payload as TodoUpdate)
+    await updateTodoItem(userId, todoId, payload as TodoUpdate)
     logger.info('Todo item updated:', payload)
   } catch (error) {
     logger.info(`An error occurred: ${error}`)
@@ -92,7 +92,7 @@ export async function deleteTodo(
       throw new Error('Delete action on todo item unauthorized')
     }
 
-    await deleteTodoItem(todoId)
+    await deleteTodoItem(userId, todoId)
     logger.info(`Deleted todo item: ${todoId} for user: ${userId}`)
   } catch (error) {
     logger.info(`An error occurred: ${error}`)
@@ -116,7 +116,7 @@ export async function updateAttachmentUrl(
       throw new Error('Update action on todo item unauthorized')
     }
 
-    await _updateAttachmentUrl(todoId, attachmentUrl)
+    await _updateAttachmentUrl(userId, todoId, attachmentUrl)
     logger.info(`Updated todo item attachment url: ${todoId}, ${attachmentUrl}`)
   } catch (error) {
     logger.info(`An error occurred: ${error}`)

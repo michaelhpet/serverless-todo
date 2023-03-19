@@ -242,7 +242,7 @@ resources:
             KeyType: HASH
           - AttributeName: todoId
             KeyType: RANGE
-        LocalSecondaryIndexes:
+        GlobalSecondaryIndexes:
           - IndexName: ${self:provider.environment.TODOS_BY_USER_INDEX}
             KeySchema:
               - AttributeName: userId
