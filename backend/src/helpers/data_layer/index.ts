@@ -8,7 +8,7 @@ import { TodoUpdate } from '../../models/TodoUpdate'
 
 const AWSXRay = require('aws-xray-sdk')
 
-const logger = createLogger('dataLayer-todos')
+const logger = createLogger('data_layer-todos')
 
 const XAWS = AWSXRay.captureAWS(AWS)
 
