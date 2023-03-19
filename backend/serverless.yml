@@ -231,9 +231,9 @@ resources:
       Properties:
         AttributeDefinitions:
           - AttributeName: todoId
-            AttributeType: S
+            AttributeType: RANGE
           - AttributeName: userId
-            AttributeType: S
+            AttributeType: HASH
           - AttributeName: createdAt
             AttributeType: S
         KeySchema:
